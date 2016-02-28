@@ -1,3 +1,5 @@
+# Demo
+http://bowei.xeo.tw:12345/login
 # orderSystem
 Let people in office order what they want and the assistant could order conveniently according to the lists which made by the system.
 這是一個訂餐系統，因為看到很多辦公室裡面都還是使用excel之類的共同編輯方法來訂定午餐，覺得很沒效率，以及在人數眾多的時候會讓負責訂餐的行政助理非常麻煩，因此決定製作一個訂餐系統，好方便行政助理方便訂餐，以及讓大家可以一目了然今天有什麼東西可以訂。
