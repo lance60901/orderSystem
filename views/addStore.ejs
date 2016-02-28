@@ -1,0 +1,197 @@
+<%- include header.ejs %>
+<style>
+/*
+ * Base structure
+ */
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+}
+
+
+/*
+ * Global add-ons
+ */
+
+.sub-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/*
+ * Top navigation
+ * Hide default border to remove 1px line.
+ */
+.navbar-fixed-top {
+  border: 0;
+}
+
+/*
+ * Sidebar
+ */
+
+/* Hide for mobile, show later */
+
+@media (min-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    background-color: #f5f5f5;
+    border-right: 1px solid #eee;
+  }
+}
+
+/* Sidebar navigation */
+.nav-sidebar {
+  margin-right: -21px; /* 20px padding + 1px border */
+  margin-bottom: 20px;
+  margin-left: -20px;
+}
+.nav-sidebar > li > a {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+.nav-sidebar > .active > a,
+.nav-sidebar > .active > a:hover,
+.nav-sidebar > .active > a:focus {
+  color: #fff;
+  background-color: #428bca;
+}
+
+
+/*
+ * Main content
+ */
+
+.main {
+  padding: 20px;
+}
+@media (min-width: 768px) {
+  .main {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+.main .page-header {
+  margin-top: 0;
+}
+
+
+/*
+ * Placeholder dashboard ideas
+ */
+
+.placeholders {
+  margin-bottom: 30px;
+  text-align: center;
+}
+.placeholders h4 {
+  margin-bottom: 0;
+}
+.placeholder {
+  margin-bottom: 20px;
+}
+.placeholder img {
+  display: inline-block;
+  border-radius: 50%;
+}
+.form-group {
+  width: 600px;
+}
+</style>
+<%- include nav.ejs %>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar"><!-- class="active" -->
+            <li><button type="button" id="addStore" class="btn btn-default btn-success col-sm-offset-2">新增店家</button></li>
+            <% if (store != undefined) { %>
+            <% var checkArea = '', areaName={ A: '西岸區', B: '安一區', C: '孝三區', D: '高級超遠區', E: '不分區'}; %>
+            <% for ( k in store) { %>
+              <% if ( checkArea != store[k].area) { %>
+                <% checkArea =  store[k].area %>
+                <h4><%=areaName[store[k].area] %></h4>
+                <% } %>
+              <li><a href="/editMenu?q=<%=store[k]._id %>"><%=store[k].storeName %></a></li>
+            <% } }%>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <form class="form-horizontal" method="POST" action="/addStore">
+            <div class="form-group row">
+              <label for="storeName" class="col-md-2 control-label">店名：</label>
+              <div class="col-md-8">
+                <div class="input"><input type="text" class="form-control" name="storeName" id="storeName" placeholder="店名" required></div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-2 control-label">營業時間：</label>
+                <div class="col-md-4"><input type="time" name="onTime" class="form-control" value="00:00" /></div>
+                <div class="col-md-4"><input type="time" name="offTime" class="form-control" value="00:00" /></div>
+            </div>
+            <div class="form-group row">
+              <label for="area" class="col-md-2 control-label">區域：</label>
+              <div class="col-md-4">
+                <select class="form-control" name="area" id="area">
+                  <option value="A" >西岸</option>
+                  <option value="B" >安一區</option>
+                  <option value="C" >孝三區</option>
+                  <option value="D" >高級超遠區</option>
+                  <option value="E" >不分區</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="officialHoliday" class="col-md-2 control-label">公休：</label>
+              <div class="col-md-4">
+                <input type="text" class="form-control" name="officialHoliday" id="officialHoliday" placeholder="公休">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="tel" class="col-md-2 control-label">電話：</label>
+              <div class="col-md-8">
+                <input type="text" class="form-control" name="tel" id="tel" placeholder="電話">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="address" class="col-md-2 control-label">地址：</label>
+              <div class="col-md-10">
+                <input type="text" class="form-control" name="address" id="address" placeholder="地址">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="ps" class="col-md-2 control-label">備註：</label>
+              <div class="col-md-10">
+                <input type="text" class="form-control" name="ps" id="ps" placeholder="備註">
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn btn-default">新增</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <link rel="styleSheet" src="./javascripts/timepicker/jquery.timepicker.min.css" />
+    <script src="./javascripts/timepicker/jquery.timepicker.min.js"></script>
+    <script>
+    $(function () {
+      $('#addStore').click(function () {
+        location.replace('/addStore')
+      });
+    })
+    </script>
+
+
+<%- include footer.ejs %>

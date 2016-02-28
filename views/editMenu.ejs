@@ -1,0 +1,239 @@
+<%- include header.ejs %>
+<style>
+/*
+ * Base structure
+ */
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+}
+
+
+/*
+ * Global add-ons
+ */
+
+.sub-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/*
+ * Top navigation
+ * Hide default border to remove 1px line.
+ */
+.navbar-fixed-top {
+  border: 0;
+}
+
+/*
+ * Sidebar
+ */
+
+/* Hide for mobile, show later */
+
+@media (min-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    background-color: #f5f5f5;
+    border-right: 1px solid #eee;
+  }
+}
+
+/* Sidebar navigation */
+.nav-sidebar {
+  margin-right: -21px; /* 20px padding + 1px border */
+  margin-bottom: 20px;
+  margin-left: -20px;
+}
+.nav-sidebar > li > a {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+.nav-sidebar > .active > a,
+.nav-sidebar > .active > a:hover,
+.nav-sidebar > .active > a:focus {
+  color: #fff;
+  background-color: #428bca;
+}
+
+
+/*
+ * Main content
+ */
+
+.main {
+  padding: 20px;
+}
+@media (min-width: 768px) {
+  .main {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+.main .page-header {
+  margin-top: 0;
+}
+
+
+/*
+ * Placeholder dashboard ideas
+ */
+
+.placeholders {
+  margin-bottom: 30px;
+  text-align: center;
+}
+.placeholders h4 {
+  margin-bottom: 0;
+}
+.placeholder {
+  margin-bottom: 20px;
+}
+.placeholder img {
+  display: inline-block;
+  border-radius: 50%;
+}
+</style>
+<%- include nav.ejs %>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar"><!-- class="active" -->
+            <li><button type="button" id="addStore" class="btn btn-default btn-success col-sm-offset-2">新增店家</button></li>
+            <% if (store != undefined) { %>
+            <% var checkArea = '', areaName={ A: '西岸區', B: '安一區', C: '孝三區', D: '高級超遠區', E: '不分區'}; %>
+            <% for ( k in store) { %>
+              <% if ( checkArea != store[k].area) { %>
+                <% checkArea =  store[k].area %>
+                <h4>&nbsp;&nbsp;<%=areaName[store[k].area] %></h4>
+                <% } %>
+              <li><a href="/editMenu?q=<%=store[k]._id %>"><%=store[k].storeName %></a></li>
+            <% } }%>
+          </ul>
+        </div>
+        <% if (menu != null) { %>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <form action="/editMenu" method="POST">
+            <input type="hidden" name="objectId" value="<%=menu[0]._id%>" />
+            <label><h1 class="page-header">編輯-<input name="storeName" value="<%=menu[0].storeName%>" required/></h1></label><br />
+            <label><p>營業時間： <input type="time" name="onTime" value="<%=menu[0].officeTime.onTime %>" /> ～
+                   <input type="time" name="offTime" value="<%=menu[0].officeTime.offTime %>" /></p>
+                 </label><br />
+            <label><p>公休： <input type="text" name="officialHoliday" value="<%=menu[0].officeTime.officialHoliday %>" /></p></label><br />
+            <label><p>電話： <input type="text" name="tel" value="<%=menu[0].tel %>" /></p></label><br />
+            <label><p>區域：
+              <select name="area" value="<%=menu[0].area %>">
+                <option value="A" <% if (menu[0].area == 'A') { %>selected<% } %> >西岸</option>
+                <option value="B" <% if (menu[0].area == 'B') { %>selected<% } %> >安一區</option>
+                <option value="C" <% if (menu[0].area == 'C') { %>selected<% } %> >孝三區</option>
+                <option value="D" <% if (menu[0].area == 'D') { %>selected<% } %> >高級超遠區</option>
+                <option value="E" <% if (menu[0].area == 'E') { %>selected<% } %> >不分區</option>
+              </select></p></label><br />
+            <label><p>地址： <input type="text" name="address" value="<%=menu[0].address %>" size="40"/></p></label><br />
+            <label><p>備註： <textarea name="ps" style="width:400px;height:100px;" ><%=menu[0].ps %></textarea></p></label>
+            <button type="button" id="delete" class="btn btn-default btn-success" value="">DELETE</button>&nbsp;&nbsp;<button type="submit" class="btn btn-default btn-success">SAVE</button>
+          </form>
+          <hr />
+          <div class="table-responsive">
+            <form action="/addMenu" method="get">
+              <input type="hidden" name="objectId" value="<%=menu[0]._id %>" />
+              <input type="hidden" name="menuId" value="<%=menu[0].menu.length %>" />
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>品名</th>
+                    <th>價錢 (NT)</th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                    <% for (i=0;i< menu[0].menu.length;i++) { %>
+                    <tr class="menu">
+                      <!-- <td><input type="checkbox" /></td> -->
+                      <td><%=i+1%>. </td>
+                      <td><%=menu[0].menu[i].name %></td>
+                      <td><%=menu[0].menu[i].price %></td>
+                      <!-- <td><input type="number" /></td> -->
+                      <!-- <td><input type="text" /></td> -->
+                      <td></td>
+                      <td><button type="button" onclick="deleteMenu('<%=menu[0].menu[i].id %>')" class="btn btn-default btn-success">Delete</button></td>
+                    </tr>
+                    <% } }%>
+
+                </tbody>
+              </table>
+            </form>
+            <button type="button" id="addMenu" class="btn btn-default btn-success">＋</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="dialog" title="提示"></div>
+    <script>
+    $(function () {
+      $('#addStore').click(function () {
+        location.replace('/addStore')
+      });
+      $('#delete').click(function () {
+        $( "#dialog" ).dialog({
+          autoOpen: false,
+          modal: true,
+          resizable: false,
+          buttons: {
+            "確認": function () {
+              $(this).dialog('close');
+              var _id = $('input[name="objectId"]').val();
+              $.ajax({
+                url: '/deleteStore',
+                data: { objectId: _id },
+                method: "POST",
+                dataType: 'text',
+                success: function (result) {
+                  location.replace("/management")
+                }
+              })
+            },
+            "取消": function () {
+              $(this).dialog('close');
+            }
+          }
+        })
+        $('#dialog').html('<p>確認要刪除店家嗎？</p>')
+        $( '#dialog' ).dialog( 'open' )
+
+      })
+      $('#addMenu').click(function () {
+          $('.table tbody').append('<tr><td></td><td><input type="text" name="name" required/></td><td><input type="number" name="price" required/></td><td></td><td><button type="submit" id="add" class="btn btn-default btn-success">Add</button></td></tr>')
+          $('#addMenu').css('display', 'none')
+      })
+    })
+
+    function deleteMenu (key) {
+      var objectId = $('input[name="objectId"]').val()
+      $.ajax({
+        url: '/deleteMenu',
+        data: { key: key, objectId: objectId },
+        method: "GET",
+        dataType: 'text',
+        success: function (result, id) {
+          location.replace("/editMenu?q="+result)
+        }
+      })
+    }
+    </script>
+
+
+<%- include footer.ejs %>

@@ -1,0 +1,26 @@
+
+
+  <% for ( k=0;k<data.lists.length;k++) { %>
+    <table class="table" style="float: left; border-right-style:solid;border-top-style:solid;">
+      <tbody>
+    <% var total = 0 %>
+    <% for ( j=0;j<data.lists[k].meals.length;j++) { %>
+      <tr>
+        <td></td>
+        <td><%=data.lists[k].meals[j].store %></td>
+        <td><%=data.lists[k].meals[j].name %></td>
+        <td><%=data.lists[k].meals[j].price %></td>
+        <td><%=data.lists[k].meals[j].ps %></td>
+      </tr>
+      <% total = total + data.lists[k].meals[j].price %>
+    <% } %>
+    <tr style="font-size: 16px; border-top-style:solid;"><td style="border-top-style:solid;width: 55px;"><%=data.lists[k].person %></td><td style="border-top-style:solid;">總金額： <%=total %> </td><td colspan="1" style="border-top-style:solid;">現金：＿＿＿</td><td style="border-top-style:solid;">找零：＿＿＿</td></tr>
+    </tbody>
+    </table>
+  <% } %>
+
+  <script>
+  (function () {
+    window.print();
+  }())
+  </script>

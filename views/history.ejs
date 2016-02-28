@@ -1,0 +1,83 @@
+<%- include header.ejs %>
+<%- include nav.ejs %>
+<style>
+  body {
+    padding-top: 50px;
+  }
+</style>
+<div class="container">
+  <div class="page-header">
+        <h1>歷史訂單</h1>
+  </div>
+      <div class="starter-template">
+        <table class="table table-striped">
+          <thead>
+            <th></th>
+            <th>時間</th>
+          </thead>
+          <tbody>
+            <% for (i = 0;i < data.length;i++) { %>
+              <tr>
+                <td><%=(i+1) %>.</td>
+                <td><a id="dialogBtn<%=data[i].id %>"><%=data[i].date %></a></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /.container -->
+    <% if(data !== null && data.length > 0) { %>
+    <% for(i=0;i<data.length;i++) { %>
+      <div id="dialog<%=data[i].id%>" title="<%=data[i].date %>">
+        <div class="starter-template">
+          <h1>內容</h1>
+          <table class="table table-striped">
+              <thead>
+                <th>訂購人：</th>
+                <th>店家：</th>
+                <th>項目：</th>
+                <th>價錢：</th>
+                <th>備註：</th>
+              </thead>
+              <tbody>
+                <% for ( k=0;k<data[i].lists.length;k++) { %>
+                  <% var total = 0 %>
+                  <% for ( j=0;j<data[i].lists[k].meals.length;j++) { %>
+                    <tr>
+                      <% if (j==0) { %>
+                        <td><%=data[i].lists[k].person %></td>
+                      <% } else { %>
+                        <td></td>
+                        <% } %>
+                      <td><%=data[i].lists[k].meals[j].store %></td>
+                      <td><%=data[i].lists[k].meals[j].name %></td>
+                      <td><%=data[i].lists[k].meals[j].price %></td>
+                      <td><%=data[i].lists[k].meals[j].ps %></td>
+                    </tr>
+                  <% } %>
+                <% } %>
+              </tbody>
+          </table>
+        </div>
+      </div>
+        <script>
+        $( "#dialog<%=data[i].id%>" ).dialog({
+          autoOpen: false,
+          modal: true,
+          // position: { my: 'center', at: 'center top+300px', of: 'button'},
+          resizable: false,
+          minWidth: document.documentElement.clientWidth*0.8,
+          buttons: {
+            "取消": function () {
+              $(this).dialog('close')
+            }
+          }
+        })
+
+        $( "#dialogBtn<%=data[i].id%>" ).click(function() {
+          $( "#dialog<%=data[i].id%>" ).dialog( "open" )
+        })
+        </script>
+    <% } }%>
+<%- include footer.ejs %>

@@ -1,0 +1,135 @@
+<%- include header.ejs %>
+<%- include nav.ejs %>
+<style>
+  body {
+    padding-top: 50px;
+  }
+</style>
+<div class="container">
+  <div class="page-header">
+        <h1><%=data.date %> 訂單
+          <% if (username == 'admin') { %>
+            <a href="/print" target="_blank"><button type="button" class="btn btn-xs btn-default btn-success"> 列印 </button></a>
+            <button type="button" class="btn btn-xs btn-default btn-success" onclick="endTheOrder();"> 結束訂單 </button>
+            <% } %>
+        </h1>
+  </div>
+      <div class="starter-template">
+        <h1>內容</h1>
+        <table class="table table-striped">
+            <thead>
+              <th>訂購人：</th>
+              <th>店家：</th>
+              <th>項目：</th>
+              <th>價錢：</th>
+              <th>備註：</th>
+              <th></th>
+            </thead>
+            <tbody>
+              <% for ( k=0;k<data.lists.length;k++) { %>
+                <% var total = 0 %>
+                <% for ( j=0;j<data.lists[k].meals.length;j++) { %>
+                  <tr>
+                    <td></td>
+                    <td><a href="/store?q=<%=data.lists[k].meals[j].store %>"><%=data.lists[k].meals[j].store %></a></td>
+                    <td><a href="javascript: orderingTheSame ('<%=data.lists[k].meals[j].store %>', '<%=data.lists[k].meals[j].name %>', '<%=data.lists[k].meals[j].price %>');"><%=data.lists[k].meals[j].name %></a></td>
+                    <td><%=data.lists[k].meals[j].price %></td>
+                    <td><%=data.lists[k].meals[j].ps %></td>
+                    <% if (data.lists[k].person === username) { %>
+                    <td><button type="button" class="btn btn-xs btn-default btn-success" onclick="deleteOrder('<%=data.lists[k].meals[j]._id %>', this, '<%=data.lists[k].person %>', '<%=data.lists[k].meals[j].price %>');"> — </button></td>
+                    <% } else { %>
+                      <td></td>
+                    <% } %>
+                  </tr>
+                  <% total = total + data.lists[k].meals[j].price %>
+                <% } %>
+                <tr style="color: red;font-size: 24px;" id="<%=data.lists[k].person %>"><td style="color: Black;"><%=data.lists[k].person %></td><td value="<%=total %>">總金額： <%=total %> </td><td colspan="3">現金：＿＿＿＿＿</td><td>找零：＿＿＿＿＿</td></tr>
+              <% } %>
+            </tbody>
+        </table>
+      </div>
+      <input type="hidden" name="area" value="<%=area %>" />
+      <div id="dialog" title="確認餐點"></div>
+      <div id="dialog2" title="確認結束訂單"></div>
+      <script>
+      function endTheOrder () {
+        $( "#dialog2" ).dialog({
+          autoOpen: false,
+          modal: true,
+          resizable: false,
+          buttons: {
+            "確認": function () {
+              $(this).dialog('close');
+              $.ajax({
+                method: 'GET',
+                url: '/haveEnd',
+                success: function (rows) {
+                  location.replace('/order')
+                }
+              });
+            },
+            "取消": function () {
+              $(this).dialog('close');
+            }
+          }
+        })
+        $('#dialog2').html('<p>確認要結束這張訂單嗎？</p>')
+        $( "#dialog2" ).dialog( "open" )
+      }
+      function deleteOrder (_id, obj, name, price) {
+        var total = $('#'+name).find('td:nth(1)').attr('value'),
+            price = parseInt(price, 10)
+        $.ajax({
+          method: 'POST',
+          data: { menuId: _id},
+          url: '/orderListDelete',
+          success: function (rows) {
+            $(obj).closest('tr').remove();
+            total = total - price;
+            $('#'+name).find('td:nth(1)').attr('value', total);
+            $('#'+name).find('td:nth(1)').html('總金額： '+total)
+          }
+        })
+      }
+      function orderingTheSame (store, name, price) {
+        $( "#dialog" ).dialog({
+          autoOpen: false,
+          modal: true,
+          resizable: false,
+          buttons: {
+            "確認": function () {
+              $(this).dialog('close');
+              var time = new Date(),
+                  orderArray = new Array(),
+                  area = $('input[name="area"]').val();
+              time = time.getHours()+':'+time.getMinutes()+':'+time.getSeconds();
+              orderArray.push({
+                store: store,
+                name: name,
+                price: price,
+                ps: '',
+                time: time
+              });
+              $.ajax({
+                url: '/orderList',
+                data: { data: JSON.stringify(orderArray), area: area },
+                method: "POST",
+                success: function (result, id) {
+                  if (result == 'success' ) {
+                    location.replace('/order')
+                  }
+                }
+              });
+            },
+            "取消": function () {
+              $(this).dialog('close');
+            }
+          }
+        })
+        $('#dialog').html('<p>你也要點 <b>'+name+'</b> 嗎？</p>')
+        $( "#dialog" ).dialog( "open" )
+
+      }
+      </script>
+    </div><!-- /.container -->
+<%- include footer.ejs %>
