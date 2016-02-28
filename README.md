@@ -2,6 +2,7 @@
 http://bowei.xeo.tw:12345/login
 # orderSystem
 Let people in office order what they want and the assistant could order conveniently according to the lists which made by the system. =============
+
 這是一個訂餐系統，因為看到很多辦公室裡面都還是使用excel之類的共同編輯方法來訂定午餐，覺得很沒效率，以及在人數眾多的時候會讓負責訂餐的行政助理非常麻煩，因此決定製作一個訂餐系統，好方便行政助理方便訂餐，以及讓大家可以一目了然今天有什麼東西可以訂。
 # Function
 - When you login with your name, you would see what other eat, and you could choose the same meal just by click the meal's name. If you're the first one order meal today, you could choose all of the store on everywhere. When anyone has order meals, the system would lock area, and the next person would be order that the store is in the same area.But, there is a special area not belong to any area. It will put some store like convenient stores or beverage shop. = 
