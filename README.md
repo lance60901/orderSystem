@@ -36,6 +36,6 @@ MongoDB version: 3.2.1
 - Yout will look the login page.
 
 # Ps.
-If you have any question, please contact me with mail.
-johnny914425@gmail.com
-I'll response you as soon as posible.
+- If you have any question, please contact me with mail.
+- johnny914425@gmail.com
+- I'll response you as soon as posible.
